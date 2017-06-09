@@ -11,6 +11,6 @@ PS：这里要注意一点，因为Xcode8.3以后打包的ruby版本要为mac系
 3.打开终端，运行命令 python 路径+AutoBuild.py(要去Xcode里把打勾的automatically manage signing去掉)
 
 
-错误：
+### 错误：
 1.error: exportArchive: No applicable devices found.
 如果报错提示是这个,要在终端输入 rvm use system
