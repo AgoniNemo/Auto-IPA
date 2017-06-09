@@ -1,5 +1,5 @@
 
-一、AutoBuild.py用法
+### AutoBuild.py用法
 
 1.如果要用到fir上传，要先安装fir-cli
 地址：https://github.com/FIRHQ/fir-cli
