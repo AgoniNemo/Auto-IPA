@@ -40,7 +40,8 @@ def build_project(conf,bundleID,sign,pName,plistPath):
         pass
 
     if conf['index'] is 0 or conf['index'] is 3 and conf['needUpload']:
-        uploadIPA = '%s/%s/%s.ipa' % (conf['targerIPA_path'],timeName,conf['project_name'])
+        uploadIPA = '%s/%s/%s.ipa' % (conf['targerIPA_path'],timeName,conf['project_name
+        os.system('chmod  u+x %s/UploadIPA.sh'%(get_path()))
         os.system('bash %s/UploadIPA.sh %s'%(get_path(),uploadIPA))
         pass
 
