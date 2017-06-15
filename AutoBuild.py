@@ -38,12 +38,15 @@ def build_project(conf,bundleID,sign,pName,plistPath):
         # 发邮件
         send_mail()
         pass
-
+    
+    filePath = '%s/%s' %(conf['targerIPA_path'],timeName)
     if conf['index'] is 0 or conf['index'] is 3 and conf['needUpload']:
-        uploadIPA = '%s/%s/%s.ipa' % (conf['targerIPA_path'],timeName,conf['project_name
+        uploadIPA = '%s/%s.ipa' % (filePath,conf['project_name'])
         os.system('chmod  u+x %s/UploadIPA.sh'%(get_path()))
         os.system('bash %s/UploadIPA.sh %s'%(get_path(),uploadIPA))
         pass
+    else:
+        os.system('open %s'%(filePath))
 
 
 
