@@ -25,4 +25,5 @@ fi
 rvm use 2.3.0
 
 fir p "$1"
+rvm use system
 open https://fir.im/apps
