@@ -1,6 +1,8 @@
 
 ### AutoBuild.py用法
 
++ 在使用前先把ruby -v 在终端看到下ruby的版本，如果大于2.0.0，需要在终端中运行命令rvm use system 
+
 + 如果要用到fir上传，要先安装fir-cli
 地址：https://github.com/FIRHQ/fir-cli
 
