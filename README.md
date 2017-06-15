@@ -14,10 +14,14 @@
 
 ### 下面来说说怎么找到证书、描述文件
 + iPhone Developer: xxxxx@xxx.com (LJV3E98B44)就是了
+
 + 还可以右键-->显示简介，常用名称就是了
 ![image](http://upload-images.jianshu.io/upload_images/1610969-0976addfe850abc8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
 + 描述文件就有点麻烦了，先进入到下面的路径
+
 > ~/Library/MobileDevice/Provisioning Profiles 这是描述文件的路径
+
 + 可以看到描述文件，如果你有多个项目建议你先copy一份放桌面，然后删除全部文件，在安装你从开发者中心下载的描述文件，这时，你在这个文件里就能看到描述文件名字了
 
 ### 错误：
