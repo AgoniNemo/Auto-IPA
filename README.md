@@ -1,7 +1,14 @@
 
+## 注意
+
+- Xcode8.3+  
+- ruby 2.3.0（需要上传到fir-cli的ruby最低版本）
+- rvm 1.29.1+
+
+
 ### AutoBuild.py用法
 
-+ 在使用前先把ruby -v 在终端看到下ruby的版本，如果大于2.0.0，需要在终端中运行命令rvm use system 
++ 在使用前先把ruby -v 在终端看到下ruby的版本，如果大于2.0.0，需要在终端中运行命令rvm use system（如果没有安装rvm点[这里](https://ruby-china.org/wiki/rvm-guide)）
 
 + 如果要用到fir上传，要先安装fir-cli
 地址：https://github.com/FIRHQ/fir-cli
@@ -23,6 +30,26 @@
 > ~/Library/MobileDevice/Provisioning Profiles 这是描述文件的路径
 
 + 可以看到描述文件，如果你有多个项目建议你先copy一份放桌面，然后删除全部文件，在安装你从开发者中心下载的描述文件，这时，你在这个文件里就能看到描述文件名字了
+
+```
+# 来说下conf.ini的配置
+# 工程名字(Target名字，比如：XL)
+Project_Name = XL
+
+# workspace的名字（这个是工作空间，使用CocoaPods生成的，一般是与工程名字一样，以xcworkspace为后缀名）
+Workspace_Name = XL
+# 配置环境，Release或者Debug,默认release
+Configuration = Release
+# 是否需要发邮件,邮件配置在下面修改,no或者yes,默认no
+needSendMail = no
+# 是否需要上传ipa到fir,no或者yes,默认no
+needUpload = no
+
+# 项目根目录(比如你的项目CocoaPods文件在/Users/AG/Documents/ios/XXXXXX/XL.xcworkspace)
+project_path = /Users/AG/Documents/ios/XXXXXX
+# 打包后ipa存储目录
+targerIPA_path = /Users/AG/Documents/ipa
+```
 
 ### 错误：
 - error: exportArchive: No applicable devices found.如果报错提示是这个,要在终端输入 rvm use system
