@@ -2,7 +2,7 @@
 ## 注意
 
 - Xcode8.3+  
-- ruby 2.3.0（需要上传到fir-cli的ruby最低版本）
+- ruby 2.3.0（需要上传到fir-cli的ruby最低版本，如果不需要上传，使用默认的就好）
 - rvm 1.29.1+
 
 
@@ -17,7 +17,7 @@
 
 + 打开conf.ini，设置里面的证书名、描述文件、项目路径等。
 
-+ 打开终端，运行命令 python 路径+AutoBuild.py(要去Xcode里把打勾的automatically manage signing去掉)
++ 打开终端，运行命令 python 路径+AutoBuild.py(要去Xcode里把打勾的automatically manage signing去掉，还有Signing里的证书与配置文件的设置都要去掉，比如：Code Signing identity与Provisioning Profile等等)
 
 ### 下面来说说怎么找到证书、描述文件
 + iPhone Developer: xxxxx@xxx.com (LJV3E98B44)就是了
@@ -53,4 +53,5 @@ targerIPA_path = /Users/AG/Documents/ipa
 
 ### 错误：
 - error: exportArchive: No applicable devices found.如果报错提示是这个,要在终端输入 rvm use system
+
 - Provisioning profile "描述文件" doesn't include signing certificate "证书".Code signing is required for product type 'Application' in SDK 'iOS 10.3' 这个错误就是你的描述文件与证书不一致造成的，正确配置好就行了。
