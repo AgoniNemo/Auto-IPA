@@ -53,3 +53,4 @@ targerIPA_path = /Users/AG/Documents/ipa
 
 ### 错误：
 - error: exportArchive: No applicable devices found.如果报错提示是这个,要在终端输入 rvm use system
+- Provisioning profile "描述文件" doesn't include signing certificate "证书".Code signing is required for product type 'Application' in SDK 'iOS 10.3' 这个错误就是你的描述文件与证书不一致造成的，正确配置好就行了。
