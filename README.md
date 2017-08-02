@@ -54,6 +54,34 @@ project_path = /Users/AG/Documents/ios/XXXXXX
 targerIPA_path = /Users/AG/Documents/ipa
 ```
 
+### 邮箱设置
++ 特别说明下qq的授权码以及开启SMTP服务点[这里](http://service.mail.qq.com/cgi-bin/help?subtype=1&&id=28&&no=1001256)
+
+
+```
+# 发送的邮箱账号
+from_addr = 1180777777@qq.com
+
+# 发送的邮箱授权码或者密码(一些邮箱登录比如 QQ 邮箱需要 SSL 认证)
+password = wsfqivulmhxjbgdc
+
+# 是否需要 SSL 认证(QQ，163等邮箱需要 SSL 认证)
+smtp_SSL = yes
+
+# SMTP 服务器地址
+smtp_server = smtp.qq.com
+
+# SMTP 服务器端口(qq的是465或者587，之前为25)
+smtp_port = 587
+
+# 收件人地址,有多个要用逗号隔开
+to_addrs = XES168880@163.com,371988888@qq.com
+
+# 发送内容（可不填）
+text = 哈哈
+
+```
+
 ### 错误：
 - error: exportArchive: No applicable devices found.如果报错提示是这个,要在终端输入 rvm use system
 

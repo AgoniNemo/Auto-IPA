@@ -29,6 +29,8 @@ def send_mail():
     from_addr = cf.get('Mail', 'from_addr')
     password = cf.get('Mail', 'password')
     smtp_server = cf.get('Mail', 'smtp_server')
+    smtp_SSL = cf.get('Mail', 'smtp_SSL')
+    smtp_port = cf.get('Mail', 'smtp_port')
 
     to_addrs = cf.get('Mail', 'to_addrs').split(',')
     sendText = cf.get('Mail', 'text')
@@ -44,13 +46,19 @@ def send_mail():
     msg = MIMEText(text, 'plain', 'utf-8')
     msg['From'] = _format_addr('自动打包系统 <%s>' % from_addr)
     # '%s' % ','.join([_format_addr('<%s>' % to_addr)for to_addr in to_addrs]) _format_addr('xx测试人员 <%s>' % to_addr)
-    print('新的 <%s>' % ','.join([_format_addr('<%s>' % to_addr)for to_addr in to_addrs]));
-    print('xx测试人员 <%s>' % to_addr);
+    # print('新的 <%s>' % ','.join([_format_addr('<%s>' % to_addr)for to_addr in to_addrs]));
     msg['To'] = 'xx测试人员 <%s>' % ','.join([_format_addr('<%s>' % to_addr)for to_addr in to_addrs])
     msg['Subject'] = Header('iOS客户端打包完成', 'utf-8').encode()
-    # 465 587
-    server = smtplib.SMTP(smtp_server, 465)
+
+    global server;
+    if smtp_SSL.lower() is 'yes':
+        server = smtplib.SMTP_SSL(smtp_server)
+    else:
+        server = smtplib.SMTP(smtp_server,int(smtp_port))
+
     server.set_debuglevel(1)
     server.login(from_addr, password)
     server.sendmail(from_addr, [to_addr], msg.as_string())
     server.quit()
+
+send_mail();
