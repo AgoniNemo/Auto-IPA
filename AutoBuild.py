@@ -38,7 +38,7 @@ def build_project(conf,bundleID,sign,pName,plistPath):
         # 发邮件
         send_mail()
         pass
-    
+
     filePath = '%s/%s' %(conf['targerIPA_path'],timeName)
     if conf['index'] is 0 or conf['index'] is 3 and conf['needUpload']:
         uploadIPA = '%s/%s.ipa' % (filePath,conf['project_name'])
