@@ -51,7 +51,7 @@ def send_mail():
     msg['Subject'] = Header('iOS客户端打包完成', 'utf-8').encode()
 
     global server;
-    if smtp_SSL.lower() is 'yes':
+    if smtp_SSL.lower() == 'yes':
         server = smtplib.SMTP_SSL(smtp_server)
     else:
         server = smtplib.SMTP(smtp_server,int(smtp_port))
