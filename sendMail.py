@@ -60,5 +60,3 @@ def send_mail():
     server.login(from_addr, password)
     server.sendmail(from_addr, [to_addr], msg.as_string())
     server.quit()
-
-send_mail();
