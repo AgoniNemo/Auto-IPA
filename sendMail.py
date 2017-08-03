@@ -31,8 +31,8 @@ def send_mail():
     smtp_server = cf.get('Mail', 'smtp_server')
     smtp_SSL = cf.get('Mail', 'smtp_SSL')
     smtp_port = cf.get('Mail', 'smtp_port')
-
-    to_addrs = cf.get('Mail', 'to_addrs').split(',')
+    to = cf.get('Mail', 'to_addrs')
+    to_addrs = to.split(',')
     sendText = cf.get('Mail', 'text')
 
     if len(sendText) is 0:
@@ -45,9 +45,10 @@ def send_mail():
 
     msg = MIMEText(text, 'plain', 'utf-8')
     msg['From'] = _format_addr('自动打包系统 <%s>' % from_addr)
-    # '%s' % ','.join([_format_addr('<%s>' % to_addr)for to_addr in to_addrs]) _format_addr('xx测试人员 <%s>' % to_addr)
-    # print('新的 <%s>' % ','.join([_format_addr('<%s>' % to_addr)for to_addr in to_addrs]));
-    msg['To'] = 'xx测试人员 <%s>' % ','.join([_format_addr('<%s>' % to_addr)for to_addr in to_addrs])
+
+    print('发送邮件 <%s>' % to);
+
+    msg['To'] = 'xx测试人员 <%s>'%(to)
     msg['Subject'] = Header('iOS客户端打包完成', 'utf-8').encode()
 
     global server;
@@ -58,5 +59,5 @@ def send_mail():
 
     server.set_debuglevel(1)
     server.login(from_addr, password)
-    server.sendmail(from_addr, [to_addr], msg.as_string())
+    server.sendmail(from_addr, to_addrs, msg.as_string())
     server.quit()
