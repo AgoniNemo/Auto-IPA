@@ -26,21 +26,49 @@ def build_project(conf,bundleID,sign,pName,plistPath):
 
     # 导出xcarchive
     build = 'xcodebuild -workspace %s -scheme %s -configuration %s -archivePath %s clean archive build CODE_SIGN_IDENTITY="%s" PROVISIONING_PROFILE="%s" PRODUCT_BUNDLE_IDENTIFIER="%s"' %(xcworkPath,conf['project_name'],conf['configuration'],xcarchivePath,sign,pName,bundleID)
-    print(build);
+    # print(build)
     os.system(build)
 
+    # 自动生成的plist文件名
+    p = 'ExportOptionsPlist.plist'
+
+    # 导出plist文件
+    needCreatePlist = conf['needCreatePlist']
+    if (needCreatePlist == str(True)):
+        l = ["ad-hoc","app-store","enterprise","development"]
+        try:
+            s=sign.split(':',1)[0].split(' ')[1]
+        except IOError:
+            print "Error: conf.ini文件里的 SIGN_IDENTITY 参数错误!"
+
+        path = '%s/%s' % (get_path(),p)
+        if os.path.isfile(path):
+            replist = './revise_plist.sh %s %s %s %s' % (l[conf["index"]],bundleID,conf['provisioningProfiles'],s)
+            os.system(replist)
+        else:
+            os.system('chmod u+x %s/revise_plist.sh'%(get_path()))
+            os.system('chmod u+x %s/create_plist.sh'%(get_path()))
+            os.system('chmod u+x %s/version.sh'%(get_path()))
+            print 'plist文件不存在，开始创建plist文件！'
+            explist = './create_plist.sh %s %s %s %s' % (l[conf["index"]],bundleID,conf['provisioningProfiles'],s)
+            print explist
+            os.system(explist)
+
+    plistName = p if (needCreatePlist == str(True)) else  plistPath
+    print plistName
+
     # 导出ipa
-    export = 'xcodebuild  -exportArchive -archivePath %s -exportOptionsPlist %s/%s -exportPath %s/%s' %(xcarchivePath,get_path(),plistPath,conf['targerIPA_path'],timeName)
-    print(export);
+    export = 'xcodebuild  -exportArchive -archivePath %s -exportOptionsPlist %s/%s -exportPath %s/%s -allowProvisioningUpdates' %(xcarchivePath,get_path(),plistName,conf['targerIPA_path'],timeName)
+    print(export)
     os.system(export)
 
-    if conf['needSendMail']:
+    if (conf['needSendMail'] == str(True)):
         # 发邮件
         send_mail()
         pass
 
     filePath = '%s/%s' %(conf['targerIPA_path'],timeName)
-    if conf['index'] is 0 or conf['index'] is 3 and conf['needUpload']:
+    if conf['index'] is 0 or conf['index'] is 3 and (conf['needUpload'] == str(True)):
         uploadIPA = '%s/%s.ipa' % (filePath,conf['project_name'])
         os.system('chmod  u+x %s/UploadIPA.sh'%(get_path()))
         os.system('bash %s/UploadIPA.sh %s'%(get_path(),uploadIPA))
@@ -64,6 +92,11 @@ def get_build_project_data():
     conf ={'project_path':cf.get('conf', 'project_path'),'project_name':cf.get('conf', 'Project_Name'),'workspace_Name':cf.get('conf', 'Workspace_Name'),'targerIPA_path':cf.get('conf', 'targerIPA_path'),'configuration':cf.get('conf', 'Configuration')}
     conf['needSendMail']=cf.getboolean('conf', 'needSendMail');
     conf['needUpload'] = cf.get('conf','needUpload');
+    conf['needCreatePlist'] = cf.get('conf','needCreatePlist');
+
+    # sh_path = '%s/rvm.sh' % get_path()
+    # os.system('chmod  u+x %s'%(sh_path))
+    # os.system('bash %s 1'%(sh_path))
 
     list = ["AdHoc","AppStore","Enterprise","Development"]
 
@@ -71,12 +104,13 @@ def get_build_project_data():
     for idx, val in enumerate(list):
         print("		 %s %s" % (idx, val))
 
-    index = input("请输入: ");
+    index = input("请输入序号: ");
 
     if index < 4:
         key = list[index];
         conf['type'] = key;
         conf['index'] = index;
+        conf['provisioningProfiles'] = cf.get(key,'provisioningProfiles');
 
         build_project(conf,cf.get(key,'BundleID'),cf.get(key,'SIGN_IDENTITY'),cf.get(key,'PROVISIONING_PROFILE_NAME'),cf.get(key,'PlistPath'))
     else:

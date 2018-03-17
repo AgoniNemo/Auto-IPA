@@ -15,8 +15,6 @@
 
 + 如果要用到fir上传，要先安装[fir-cli](https://github.com/FIRHQ/fir-cli),并且使用fir login + token命令登录（具体用法可以在下载地址查看）
 
-+ PS：这里要注意一点，因为Xcode8.3以后打包的ruby版本要为mac系统的默认版本，而fir-cli插件最低支持的版本为2.3.0，所以在脚本里用了rvm来做版本的切换，需要安装rvm（可以使用在终端命令rvm -v查看是不是安装了rvm）,如果安装了,最好下通过ruby -v命令查看下ruby的版本,如果高于2.0.0,需要在终端输入 rvm use system命令切换到系统版本（2.0.0版本）
-
 + 打开conf.ini，设置里面的证书名、描述文件、项目路径等。
 
 + 打开终端，运行命令 python 路径+AutoBuild.py(要去Xcode里把打勾的automatically manage signing去掉，还有Signing里的证书与配置文件的设置都要去掉，比如：Code Signing identity与Provisioning Profile等等)
@@ -44,17 +42,23 @@ Workspace_Name = XL
 # 配置环境，Release或者Debug,默认release
 Configuration = Release
 
-# 是否需要发邮件,邮件配置在下面修改,no或者yes,默认no
-needSendMail = no
+# 是否需要发邮件,邮件配置在下面修改,False或者True,默认False
+needSendMail = False
 
-# 是否需要上传ipa到fir,no或者yes,默认no
-needUpload = no
+# 是否需要上传ipa到fir,False或者True,默认False
+needUpload = False
+
+# 是否自动创建plist文件,False或者True,默认True,如果设置为False则使用参数PlistPath的配置文件
+needCreatePlist = True
 
 # 项目根目录(比如你的项目CocoaPods文件在/Users/AG/Documents/ios/XXXXXX/XL.xcworkspace)
 project_path = /Users/AG/Documents/ios/XXXXXX
 
 # 打包后ipa存储目录
 targerIPA_path = /Users/AG/Documents/ipa
+
+# 配置文件名（比如配置文件为：AdHoc.mobileprovision）
+provisioningProfiles = AdHoc
 ```
 
 ### 邮箱设置
@@ -69,12 +73,12 @@ from_addr = 1180777777@qq.com
 password = wsfqivulmhxjbgdc
 
 # 是否需要 SSL 认证(QQ，163等邮箱需要 SSL 认证)
-smtp_SSL = yes
+smtp_SSL = True
 
 # SMTP 服务器地址
 smtp_server = smtp.qq.com
 
-# SMTP 服务器端口(如果smtp_SSL=yes可不管，qq的是465或者587，之前为25)
+# SMTP 服务器端口(如果smtp_SSL=True可不管，qq的是465或者587，之前为25)
 smtp_port = 25
 
 # 收件人地址,有多个要用逗号隔开
