@@ -11,7 +11,7 @@
 
 ### AutoBuild.py用法
 
-+ 在使用前先把ruby -v 在终端看到下ruby的版本，如果大于2.0.0，需要在终端中运行命令rvm use system（如果没有安装rvm点[这里](https://ruby-china.org/wiki/rvm-guide)）
++ 如果Xcode版本是8.3～9.0之间，需要在终端看到下ruby的版本，命令为：`ruby -v` ，如果大于2.0.0，需要在终端中运行命令rvm use system（如果没有安装rvm点[这里](https://ruby-china.org/wiki/rvm-guide)）
 
 + 如果要用到fir上传，要先安装[fir-cli](https://github.com/FIRHQ/fir-cli),并且使用fir login + token命令登录（具体用法可以在下载地址查看）
 
