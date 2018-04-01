@@ -76,6 +76,9 @@ teamID = GSDFGDG
 APIKey = xxxxxxxxxxxxxxxxx
 ```
 
+在用Xcode导出包时，可以找到teamID，注意是Xcode的automatically manage signing管理打出来的测试包，如下图：
+![teamID](https://raw.githubusercontent.com/AgoniNemo/Auto-IPA/master/img/teamID.png)
+
 ### 注意：v1.1.0版本移除needUpload参数，改为uploadFir参数
 
 ### 邮箱设置
