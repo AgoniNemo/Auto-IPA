@@ -1,29 +1,17 @@
-# 获取当前路径
-path=$(dirname $0)
-path=${path/\./$(pwd)}
-file="$path/file"
+#!/usr/bin/env bash
 
 examineVersion(){
-    xcodebuild -version | awk '/Xcode/ ' >> file
-
+    v=$(xcodebuild -version | awk '/Xcode/ ')
+    length=${#v}
+    result=${v:6:$length}
     nine_above=false
-
-    version=""
-    while read line
-    do
-        version=$line
-        break
-    done < file
-    
-    result=${version#* }
-
+  
     if [ `echo $result | awk -v t1=9 '{print($1>t1)? "1":"0"}'` -eq "0" ]
     then
         nine_above=false
     else
         nine_above=true
     fi
-    rm $file
 }
 
 # if [ nine_above == true ]

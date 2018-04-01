@@ -16,7 +16,18 @@ import ConfigParser
 def send_mail():
     sendMail.send_mail();
 
-# 导出xcarchive,ipa
+# 上传到蒲公英
+def uploadPGYer(path,apiKey,updateDescription=''):
+    os.popen("curl -F 'file=@%s' -F '_api_key=%s' -F 'updateDescription=%s' https://www.pgyer.com/apiv2/app/upload"%(path,apiKey,updateDescription))
+    os.system("open https://www.pgyer.com/my")
+
+# 导出ipa
+def exportIPA(xcarchivePath,plistPath,exportPath):
+    export = 'xcodebuild  -exportArchive -archivePath %s -exportOptionsPlist %s -exportPath %s -allowProvisioningUpdates' %(xcarchivePath,plistPath,exportPath)
+    # print(export)
+    os.system(export)
+
+# 导出xcarchive
 def build_project(conf,bundleID,sign,pName,plistPath):
 
     timeName = time.strftime('%Y-%m-%d-%H-%M-%S',time.localtime(time.time()))
@@ -24,13 +35,23 @@ def build_project(conf,bundleID,sign,pName,plistPath):
     xcworkPath = '%s/%s.xcworkspace' %(conf['project_path'],conf['workspace_Name'])
     xcarchivePath = '%s/%s/%s_%s.xcarchive' %(conf['targerIPA_path'],timeName,conf['project_name'],conf['type'])
 
+    scheme = ''
+    if (conf['isDev'] == str(True)):
+        scheme = conf['targers_dev']
+    else:
+        scheme = conf['Project_Name']
+    
     # 导出xcarchive
-    build = 'xcodebuild -workspace %s -scheme %s -configuration %s -archivePath %s clean archive build CODE_SIGN_IDENTITY="%s" PROVISIONING_PROFILE="%s" PRODUCT_BUNDLE_IDENTIFIER="%s"' %(xcworkPath,conf['project_name'],conf['configuration'],xcarchivePath,sign,pName,bundleID)
-    # print(build)
+    build = 'xcodebuild -workspace %s -scheme %s -configuration %s -archivePath %s clean archive build' %(xcworkPath,scheme,conf['configuration'],xcarchivePath)
+    
+    if (conf['automatic'] == str(False)):
+        string = ' CODE_SIGN_IDENTITY="%s" PROVISIONING_PROFILE="%s" PRODUCT_BUNDLE_IDENTIFIER="%s"'%(sign,pName,bundleID)
+        build = build + string 
     os.system(build)
+    # print(build)
 
     # 自动生成的plist文件名
-    p = 'ExportOptionsPlist.plist'
+    p = 'ExportOptionsPlist.plist' if (conf['automatic'] == str(True)) else 'TeamExportOptionsPlist.plist'
 
     # 导出plist文件
     needCreatePlist = conf['needCreatePlist']
@@ -42,25 +63,37 @@ def build_project(conf,bundleID,sign,pName,plistPath):
             print "Error: conf.ini文件里的 SIGN_IDENTITY 参数错误!"
 
         path = '%s/%s' % (get_path(),p)
+
         if os.path.isfile(path):
             replist = './revise_plist.sh %s %s %s %s' % (l[conf["index"]],bundleID,conf['provisioningProfiles'],s)
+            print replist
             os.system(replist)
         else:
-            os.system('chmod u+x %s/revise_plist.sh'%(get_path()))
-            os.system('chmod u+x %s/create_plist.sh'%(get_path()))
-            os.system('chmod u+x %s/version.sh'%(get_path()))
+            t = '' if (conf['automatic'] == str(True)) else '_team'
+
+            os.system('chmod u+x %s/revise%s_plist.sh'%(get_path(),t))
+            os.system('chmod u+x %s/create%s_plist.sh'%(get_path(),t))
             print 'plist文件不存在，开始创建plist文件！'
-            explist = './create_plist.sh %s %s %s %s' % (l[conf["index"]],bundleID,conf['provisioningProfiles'],s)
+            explist = './create%s_plist.sh %s' % (t,l[conf["index"]])
+            if (conf['automatic'] == str(True)):
+                explist = '%s %s'%(explist,conf['teamID'])
+            else:
+                explist = "%s %s %s %s"%(explist,bundleID,conf['provisioningProfiles'],s)
             print explist
             os.system(explist)
 
     plistName = p if (needCreatePlist == str(True)) else  plistPath
-    print plistName
+    # print plistName
 
     # 导出ipa
-    export = 'xcodebuild  -exportArchive -archivePath %s -exportOptionsPlist %s/%s -exportPath %s/%s -allowProvisioningUpdates' %(xcarchivePath,get_path(),plistName,conf['targerIPA_path'],timeName)
-    print(export)
-    os.system(export)
+    # export = 'xcodebuild  -exportArchive -archivePath %s -exportOptionsPlist %s/%s -exportPath %s/%s -allowProvisioningUpdates' %(xcarchivePath,get_path(),plistName,conf['targerIPA_path'],timeName)
+    # print(export)
+    # os.system(export)
+
+    plistp = '%s/%s'%(get_path(),plistName)
+    exportp = '%s/%s'%(conf['targerIPA_path'],timeName)
+    # 导出ipa
+    exportIPA(xcarchivePath,plistp,exportp)
 
     if (conf['needSendMail'] == str(True)):
         # 发邮件
@@ -68,16 +101,19 @@ def build_project(conf,bundleID,sign,pName,plistPath):
         pass
 
     filePath = '%s/%s' %(conf['targerIPA_path'],timeName)
-    if conf['index'] is 0 or conf['index'] is 3 and (conf['needUpload'] == str(True)):
+    if (conf['index'] is 0 or conf['index'] is 3):
         uploadIPA = '%s/%s.ipa' % (filePath,conf['project_name'])
-        os.system('chmod  u+x %s/UploadIPA.sh'%(get_path()))
-        os.system('bash %s/UploadIPA.sh %s'%(get_path(),uploadIPA))
-        pass
+
+        if (conf['uploadFir'] == str(True)):
+            os.system('chmod  u+x %s/UploadIPA.sh'%(get_path()))
+            os.system('bash %s/UploadIPA.sh %s'%(get_path(),uploadIPA))
+        
+        if (conf['uploadPGYer'] == str(True)):
+            uploadPGYer(uploadIPA,conf['APIKey'],'版本更新')
     else:
         os.system('open %s'%(filePath))
 
-
-
+# 获取当前路径
 def get_path():
     path = sys.path[0]
     #判断为脚本文件还是py2exe编译后的文件，如果是脚本文件，则返回的是脚本的目录，如果是py2exe编译后的文件，则返回的是编译后的文件路径
@@ -85,14 +121,21 @@ def get_path():
         path =  os.path.dirname(path)
     return path;
 
+# 读取配置文件
 def get_build_project_data():
     cf = ConfigParser.ConfigParser()
     cf.read('%s/conf.ini' % get_path())
 
     conf ={'project_path':cf.get('conf', 'project_path'),'project_name':cf.get('conf', 'Project_Name'),'workspace_Name':cf.get('conf', 'Workspace_Name'),'targerIPA_path':cf.get('conf', 'targerIPA_path'),'configuration':cf.get('conf', 'Configuration')}
     conf['needSendMail']=cf.getboolean('conf', 'needSendMail');
-    conf['needUpload'] = cf.get('conf','needUpload');
     conf['needCreatePlist'] = cf.get('conf','needCreatePlist');
+    conf['teamID'] = cf.get('conf','teamID');
+    conf['APIKey'] = cf.get('conf','APIKey');
+    conf['automatic'] = cf.get('conf','automatic');
+    conf['uploadFir'] = cf.get('conf','uploadFir');
+    conf['uploadPGYer'] = cf.get('conf','uploadPGYer');
+    conf['targers_dev'] = cf.get('conf','targers_dev');
+    conf['isDev'] = cf.get('conf','isDev');
 
     # sh_path = '%s/rvm.sh' % get_path()
     # os.system('chmod  u+x %s'%(sh_path))

@@ -3,15 +3,12 @@
 # 获取当前路径
 path=$(dirname $0)
 path=${path/\./$(pwd)}
-file="{$path}/ExportOptionsPlist"
+file="{$path}/TeamExportOptionsPlist"
 
-echo "ExportOptionsPlist.plist" > tempfile
+echo "TeamExportOptionsPlist.plist" > tempfile
 
 source './create_xml.sh'
 source './version.sh'
-
-# 设置文件权限
-chmod u+x ./create_xml.sh
 
 examineVersion
 
@@ -23,7 +20,7 @@ tag_start 'dict'
 if [ $nine_above == true ]
 then
     put_key 'key' 'compileBitcode'
-    tag_value 'false'
+    tag_value 'true'
 fi
 put_key 'key' 'method'
 put_key 'string' ${1}
@@ -34,17 +31,14 @@ then
     tag_end 'plist'
     exit 1
 fi
-put_key 'key' 'provisioningProfiles'
-tag_start 'dict'
-put_key 'key' ${2}
-put_key 'string' ${3}
-tag_end 'dict'
-put_key 'key' 'signingCertificate'
-put_key 'string' "iPhone ${4}"
 put_key 'key' 'signingStyle'
-put_key 'string' 'manual'
+put_key 'string' 'automatic'
 put_key 'key' 'stripSwiftSymbols'
 tag_value 'true'
+put_key 'key' 'teamID'
+put_key 'string' ${2}
+put_key 'key' 'thinning'
+put_key 'string' '&lt;none&gt;'
 tag_end 'dict'
 tag_end 'plist'
 

@@ -1,10 +1,10 @@
 
 ## 前言
-这是用Python+xcodebuild写的脚本打包工具，支持上传fir,打包完成后多邮件发送
+这是用Python+xcodebuild写的脚本打包工具，支持上传fir与蒲公英上传，打包完成后多邮件发送
 
 ### 环境
 
-- Xcode8.3+  
+- Xcode8.3+
 - ruby 2.3.0（需要上传到fir-cli的ruby最低版本，如果不需要上传，使用默认的就好）
 - rvm 1.29.1+
 - 项目使用CocoaPods生成
@@ -17,7 +17,7 @@
 
 + 打开conf.ini，设置里面的证书名、描述文件、项目路径等。
 
-+ 打开终端，运行命令 python 路径+AutoBuild.py(要去Xcode里把打勾的automatically manage signing去掉，还有Signing里的证书与配置文件的设置都要去掉，比如：Code Signing identity与Provisioning Profile等等)
++ 打开终端，运行命令 python 路径+AutoBuild.py(如果下面的参数automatic为False则去Xcode里把打勾的automatically manage signing去掉，还有Signing里的证书与配置文件的设置都要去掉，比如：Code Signing identity与Provisioning Profile等等)
 
 ### 下面来说说怎么找到证书、描述文件
 + iPhone Developer: xxxxx@xxx.com (LJV3E98B44)就是了
@@ -45,9 +45,6 @@ Configuration = Release
 # 是否需要发邮件,邮件配置在下面修改,False或者True,默认False
 needSendMail = False
 
-# 是否需要上传ipa到fir,False或者True,默认False
-needUpload = False
-
 # 是否自动创建plist文件,False或者True,默认True,如果设置为False则使用参数PlistPath的配置文件
 needCreatePlist = True
 
@@ -60,6 +57,26 @@ targerIPA_path = /Users/AG/Documents/ipa
 # 配置文件名（比如配置文件为：AdHoc.mobileprovision）
 provisioningProfiles = AdHoc
 ```
+
+### v1.1.0版本添加参数
+
+```
+#是否打包测试环境,False或者True,默认False
+isDev = True
+#是否为Xcode自动管理证书,False或者True,默认False（如果要设置为True记得把Xcode里的automatically manage signing选项打勾）
+automatic = False
+#是否需要上传ipa到fir,False或者True,默认True
+uploadFir = False
+#是否需要上传ipa到PGYer,False或者True,默认True
+uploadPGYer = True
+
+# teamID
+teamID = GSDFGDG
+# 蒲公英APIKey
+APIKey = xxxxxxxxxxxxxxxxx
+```
+
+### 注意：v1.1.0版本移除needUpload参数，改为uploadFir参数
 
 ### 邮箱设置
 + 特别说明下qq的授权码以及开启SMTP服务点[这里](http://service.mail.qq.com/cgi-bin/help?subtype=1&&id=28&&no=1001256)

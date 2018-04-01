@@ -1,7 +1,8 @@
 #! /bin/bash
 
-outfile=ExportOptionsPlist.plist
+outfile=$(cat tempfile)
 tabs=0
+echo $outfile
 
 put(){
  echo '<'${*}'>' >> $outfile
