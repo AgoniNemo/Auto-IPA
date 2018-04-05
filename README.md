@@ -39,7 +39,7 @@ Project_Name = XL
 # workspace的名字（这个是工作空间，使用CocoaPods生成的，一般是与工程名字一样，以xcworkspace为后缀名）
 Workspace_Name = XL
 
-# 配置环境，Release或者Debug,默认release
+# 配置环境，Release或者Debug,默认Release
 Configuration = Release
 
 # 是否需要发邮件,邮件配置在下面修改,False或者True,默认False
@@ -62,13 +62,13 @@ provisioningProfiles = AdHoc
 
 ```
 #是否打包测试环境,False或者True,默认False
-isDev = True
+isDev = False
 #是否为Xcode自动管理证书,False或者True,默认False（如果要设置为True记得把Xcode里的automatically manage signing选项打勾）
 automatic = False
-#是否需要上传ipa到fir,False或者True,默认True
+#是否需要上传ipa到fir,False或者True,默认False
 uploadFir = False
-#是否需要上传ipa到PGYer,False或者True,默认True
-uploadPGYer = True
+#是否需要上传ipa到PGYer,False或者True,默认False
+uploadPGYer = False
 
 # teamID
 teamID = GSDFGDG

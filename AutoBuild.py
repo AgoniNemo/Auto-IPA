@@ -39,20 +39,21 @@ def build_project(conf,bundleID,sign,pName,plistPath):
     if (conf['isDev'] == str(True)):
         scheme = conf['targers_dev']
     else:
-        scheme = conf['Project_Name']
+        scheme = conf['project_name']
     
     # 导出xcarchive
     build = 'xcodebuild -workspace %s -scheme %s -configuration %s -archivePath %s clean archive build' %(xcworkPath,scheme,conf['configuration'],xcarchivePath)
     
     if (conf['automatic'] == str(False)):
         string = ' CODE_SIGN_IDENTITY="%s" PROVISIONING_PROFILE="%s" PRODUCT_BUNDLE_IDENTIFIER="%s"'%(sign,pName,bundleID)
-        build = build + string 
+        build = build + string
+
     os.system(build)
     # print(build)
 
     # 自动生成的plist文件名
-    p = 'ExportOptionsPlist.plist' if (conf['automatic'] == str(True)) else 'TeamExportOptionsPlist.plist'
-
+    p = 'TeamExportOptionsPlist.plist' if (conf['automatic'] == str(True)) else 'ExportOptionsPlist.plist'
+    print ("plist文件名:%s"%p)
     # 导出plist文件
     needCreatePlist = conf['needCreatePlist']
     if (needCreatePlist == str(True)):
@@ -63,13 +64,13 @@ def build_project(conf,bundleID,sign,pName,plistPath):
             print "Error: conf.ini文件里的 SIGN_IDENTITY 参数错误!"
 
         path = '%s/%s' % (get_path(),p)
-
+        print path
         if os.path.isfile(path):
-            replist = './revise_plist.sh %s %s %s %s' % (l[conf["index"]],bundleID,conf['provisioningProfiles'],s)
+            replist = './revise_plist.sh %s %s %s %s %s' % (p,l[conf["index"]],bundleID,conf['provisioningProfiles'],s)
             print replist
             os.system(replist)
         else:
-            t = '' if (conf['automatic'] == str(True)) else '_team'
+            t = '_team' if (conf['automatic'] == str(True)) else ''
 
             os.system('chmod u+x %s/revise%s_plist.sh'%(get_path(),t))
             os.system('chmod u+x %s/create%s_plist.sh'%(get_path(),t))
@@ -83,7 +84,7 @@ def build_project(conf,bundleID,sign,pName,plistPath):
             os.system(explist)
 
     plistName = p if (needCreatePlist == str(True)) else  plistPath
-    # print plistName
+    print ("--%s--"%(plistName))
 
     # 导出ipa
     # export = 'xcodebuild  -exportArchive -archivePath %s -exportOptionsPlist %s/%s -exportPath %s/%s -allowProvisioningUpdates' %(xcarchivePath,get_path(),plistName,conf['targerIPA_path'],timeName)
