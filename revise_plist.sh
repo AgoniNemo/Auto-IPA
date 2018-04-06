@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
 
+if [ $? -eq 0 ]
+then
+    echo "导出xcarchive成功！"
+else
+    echo "导出xcarchive失败！"
+    exit 1
+fi
+
 plistName=$1
 echo "修改plist文件：$plistName"
 

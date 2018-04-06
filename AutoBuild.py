@@ -23,7 +23,7 @@ def uploadPGYer(path,apiKey,updateDescription=''):
 
 # 导出ipa
 def exportIPA(xcarchivePath,plistPath,exportPath):
-    export = 'xcodebuild  -exportArchive -archivePath %s -exportOptionsPlist %s -exportPath %s -allowProvisioningUpdates' %(xcarchivePath,plistPath,exportPath)
+    export = 'xcodebuild  -exportArchive -archivePath %s -exportOptionsPlist %s -exportPath %s -allowProvisioningUpdates || exit 1' %(xcarchivePath,plistPath,exportPath)
     # print(export)
     os.system(export)
 
@@ -47,7 +47,7 @@ def build_project(conf,bundleID,sign,pName,plistPath):
     if (conf['automatic'] == str(False)):
         string = ' CODE_SIGN_IDENTITY="%s" PROVISIONING_PROFILE="%s" PRODUCT_BUNDLE_IDENTIFIER="%s"'%(sign,pName,bundleID)
         build = build + string
-
+    
     os.system(build)
     # print(build)
 
