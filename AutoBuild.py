@@ -103,7 +103,10 @@ def build_project(conf,bundleID,sign,pName,plistPath):
 
     filePath = '%s/%s' %(conf['targerIPA_path'],timeName)
     if (conf['index'] is 0 or conf['index'] is 3):
-        uploadIPA = '%s/%s.ipa' % (filePath,conf['project_name'])
+        
+        name = conf['targers_dev'] if (conf['isDev'] == str(True)) else conf['project_name']
+
+        uploadIPA = '%s/%s.ipa' % (filePath,name)
 
         if (conf['uploadFir'] == str(True)):
             os.system('chmod  u+x %s/UploadIPA.sh'%(get_path()))
