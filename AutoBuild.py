@@ -36,10 +36,10 @@ def build_project(conf,bundleID,sign,pName,plistPath):
     xcarchivePath = '%s/%s/%s_%s.xcarchive' %(conf['targerIPA_path'],timeName,conf['project_name'],conf['type'])
 
     scheme = ''
-    if (conf['isDev'] == str(True)):
-        scheme = conf['targers_dev']
-    else:
+    if (conf['isDev'] == str(False) or conf['type'] == 'AppStore'):
         scheme = conf['project_name']
+    else:
+        scheme = conf['targers_dev']
     
     # 导出xcarchive
     build = 'xcodebuild -workspace %s -scheme %s -configuration %s -archivePath %s clean archive build' %(xcworkPath,scheme,conf['configuration'],xcarchivePath)
@@ -47,7 +47,8 @@ def build_project(conf,bundleID,sign,pName,plistPath):
     if (conf['automatic'] == str(False)):
         string = ' CODE_SIGN_IDENTITY="%s" PROVISIONING_PROFILE="%s" PRODUCT_BUNDLE_IDENTIFIER="%s"'%(sign,pName,bundleID)
         build = build + string
-    
+        
+    build = build + ' || exit 1'
     os.system(build)
     # print(build)
 
@@ -96,6 +97,10 @@ def build_project(conf,bundleID,sign,pName,plistPath):
     # 导出ipa
     exportIPA(xcarchivePath,plistp,exportp)
 
+    if(conf['type'] == 'AppStore'):
+        os.system('chmod  u+x ./BundleVersion.sh')
+        os.system('./BundleVersion.sh %s'%(conf['plist_path']))
+
     if (conf['needSendMail'] == str(True)):
         # 发邮件
         send_mail()
@@ -103,8 +108,8 @@ def build_project(conf,bundleID,sign,pName,plistPath):
 
     filePath = '%s/%s' %(conf['targerIPA_path'],timeName)
     if (conf['index'] is 0 or conf['index'] is 3):
-        
-        name = conf['targers_dev'] if (conf['isDev'] == str(True)) else conf['project_name']
+        name = conf['project_name'] if (conf['isDev'] == str(False) or conf['type'] == 'AppStore') else conf['targers_dev']
+        print'===%s==='%(name)
 
         uploadIPA = '%s/%s.ipa' % (filePath,name)
 
@@ -140,6 +145,7 @@ def get_build_project_data():
     conf['uploadPGYer'] = cf.get('conf','uploadPGYer');
     conf['targers_dev'] = cf.get('conf','targers_dev');
     conf['isDev'] = cf.get('conf','isDev');
+    conf['plist_path'] = cf.get('conf','plist_path');
 
     # sh_path = '%s/rvm.sh' % get_path()
     # os.system('chmod  u+x %s'%(sh_path))

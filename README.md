@@ -72,6 +72,8 @@ uploadPGYer = False
 
 # teamID
 teamID = GSDFGDG
+# info.plist文件的位置
+plist_path = /Users/AG/Documents/ios/XXXXXX/SupportingFiles
 # 蒲公英APIKey
 APIKey = xxxxxxxxxxxxxxxxx
 ```
