@@ -76,6 +76,8 @@ teamID = GSDFGDG
 plist_path = /Users/AG/Documents/ios/XXXXXX/SupportingFiles
 # 蒲公英APIKey
 APIKey = xxxxxxxxxxxxxxxxx
+# FIRToken
+FIRToken = xxxxxxxxxxxxxxxxx
 ```
 
 在用Xcode导出包时，可以找到teamID，注意是Xcode的automatically manage signing管理打出来的测试包，如下图：
