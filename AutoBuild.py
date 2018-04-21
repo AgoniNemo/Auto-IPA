@@ -14,7 +14,7 @@ import ConfigParser
 
 # 发邮件
 def send_mail():
-    sendMail.send_mail();
+    sendMail.send_mail()
 
 # 上传到蒲公英
 def uploadPGYer(path,apiKey,updateDescription=''):
@@ -23,8 +23,8 @@ def uploadPGYer(path,apiKey,updateDescription=''):
 
 # 导出ipa
 def exportIPA(xcarchivePath,plistPath,exportPath):
-    export = 'xcodebuild  -exportArchive -archivePath %s -exportOptionsPlist %s -exportPath %s -allowProvisioningUpdates || exit 1' %(xcarchivePath,plistPath,exportPath)
-    # print(export)
+    export = 'xcodebuild -exportArchive -archivePath %s -exportOptionsPlist %s -exportPath %s -allowProvisioningUpdates || exit 1' %(xcarchivePath,plistPath,exportPath)
+    print(export)
     os.system(export)
 
 # 导出xcarchive
@@ -36,7 +36,7 @@ def build_project(conf,bundleID,sign,pName,plistPath):
     xcarchivePath = '%s/%s/%s_%s.xcarchive' %(conf['targerIPA_path'],timeName,conf['project_name'],conf['type'])
 
     scheme = ''
-    if (conf['isDev'] == str(False) or conf['type'] == 'AppStore'):
+    if (conf['isDev'] == str(False) or conf['type'] == 'AppStore' or conf['type'] == 'AdHoc'):
         scheme = conf['project_name']
     else:
         scheme = conf['targers_dev']
@@ -62,26 +62,26 @@ def build_project(conf,bundleID,sign,pName,plistPath):
         try:
             s=sign.split(':',1)[0].split(' ')[1]
         except IOError:
-            print "Error: conf.ini文件里的 SIGN_IDENTITY 参数错误!"
+            print("Error: conf.ini文件里的 SIGN_IDENTITY 参数错误!")
 
         path = '%s/%s' % (get_path(),p)
-        print path
+        print(path)
         if os.path.isfile(path):
             replist = './revise_plist.sh %s %s %s %s %s' % (p,l[conf["index"]],bundleID,conf['provisioningProfiles'],s)
-            print replist
+            print(replist) 
             os.system(replist)
         else:
             t = '_team' if (conf['automatic'] == str(True)) else ''
 
             os.system('chmod u+x %s/revise%s_plist.sh'%(get_path(),t))
             os.system('chmod u+x %s/create%s_plist.sh'%(get_path(),t))
-            print 'plist文件不存在，开始创建plist文件！'
+            print('plist文件不存在，开始创建plist文件！')
             explist = './create%s_plist.sh %s' % (t,l[conf["index"]])
             if (conf['automatic'] == str(True)):
                 explist = '%s %s'%(explist,conf['teamID'])
             else:
                 explist = "%s %s %s %s"%(explist,bundleID,conf['provisioningProfiles'],s)
-            print explist
+            print(explist)
             os.system(explist)
 
     plistName = p if (needCreatePlist == str(True)) else  plistPath
@@ -108,14 +108,14 @@ def build_project(conf,bundleID,sign,pName,plistPath):
 
     filePath = '%s/%s' %(conf['targerIPA_path'],timeName)
     if (conf['index'] is 0 or conf['index'] is 3):
-        name = conf['project_name'] if (conf['isDev'] == str(False) or conf['type'] == 'AppStore') else conf['targers_dev']
-        print'===%s==='%(name)
+        name = conf['project_name'] if (conf['isDev'] == str(False) or conf['type'] == 'AppStore' or conf['type'] == 'AdHoc') else conf['targers_dev']
+        print('===%s==='%(name))
 
         uploadIPA = '%s/%s.ipa' % (filePath,name)
 
         if (conf['uploadFir'] == str(True)):
             os.system('chmod  u+x %s/UploadIPA.sh'%(get_path()))
-            os.system('bash %s/UploadIPA.sh %s'%(get_path(),uploadIPA))
+            os.system('bash %s/UploadIPA.sh %s %s'%(get_path(),uploadIPA,conf['FIRToken']))
         
         if (conf['uploadPGYer'] == str(True)):
             uploadPGYer(uploadIPA,conf['APIKey'],'版本更新')
@@ -128,7 +128,7 @@ def get_path():
     #判断为脚本文件还是py2exe编译后的文件，如果是脚本文件，则返回的是脚本的目录，如果是py2exe编译后的文件，则返回的是编译后的文件路径
     if os.path.isfile(path):
         path =  os.path.dirname(path)
-    return path;
+    return path
 
 # 读取配置文件
 def get_build_project_data():
@@ -136,16 +136,17 @@ def get_build_project_data():
     cf.read('%s/conf.ini' % get_path())
 
     conf ={'project_path':cf.get('conf', 'project_path'),'project_name':cf.get('conf', 'Project_Name'),'workspace_Name':cf.get('conf', 'Workspace_Name'),'targerIPA_path':cf.get('conf', 'targerIPA_path'),'configuration':cf.get('conf', 'Configuration')}
-    conf['needSendMail']=cf.getboolean('conf', 'needSendMail');
-    conf['needCreatePlist'] = cf.get('conf','needCreatePlist');
-    conf['teamID'] = cf.get('conf','teamID');
-    conf['APIKey'] = cf.get('conf','APIKey');
-    conf['automatic'] = cf.get('conf','automatic');
-    conf['uploadFir'] = cf.get('conf','uploadFir');
-    conf['uploadPGYer'] = cf.get('conf','uploadPGYer');
-    conf['targers_dev'] = cf.get('conf','targers_dev');
-    conf['isDev'] = cf.get('conf','isDev');
-    conf['plist_path'] = cf.get('conf','plist_path');
+    conf['needSendMail']=cf.getboolean('conf', 'needSendMail')
+    conf['needCreatePlist'] = cf.get('conf','needCreatePlist')
+    conf['teamID'] = cf.get('conf','teamID')
+    conf['APIKey'] = cf.get('conf','APIKey')
+    conf['FIRToken'] = cf.get('conf','FIRToken')
+    conf['automatic'] = cf.get('conf','automatic')
+    conf['uploadFir'] = cf.get('conf','uploadFir')
+    conf['uploadPGYer'] = cf.get('conf','uploadPGYer')
+    conf['targers_dev'] = cf.get('conf','targers_dev')
+    conf['isDev'] = cf.get('conf','isDev')
+    conf['plist_path'] = cf.get('conf','plist_path')
 
     # sh_path = '%s/rvm.sh' % get_path()
     # os.system('chmod  u+x %s'%(sh_path))
@@ -153,17 +154,17 @@ def get_build_project_data():
 
     list = ["AdHoc","AppStore","Enterprise","Development"]
 
-    print "~~~~~~~~~~~~选择打包方式(输入序号)~~~~~~~~~~~~~~~"
+    print("~~~~~~~~~~~~选择打包方式(输入序号)~~~~~~~~~~~~~~~")
     for idx, val in enumerate(list):
         print("		 %s %s" % (idx, val))
 
-    index = input("请输入序号: ");
+    index = input("请输入序号: ")
 
     if index < 4:
-        key = list[index];
-        conf['type'] = key;
-        conf['index'] = index;
-        conf['provisioningProfiles'] = cf.get(key,'provisioningProfiles');
+        key = list[index]
+        conf['type'] = key
+        conf['index'] = index
+        conf['provisioningProfiles'] = cf.get(key,'provisioningProfiles')
 
         build_project(conf,cf.get(key,'BundleID'),cf.get(key,'SIGN_IDENTITY'),cf.get(key,'PROVISIONING_PROFILE_NAME'),cf.get(key,'PlistPath'))
     else:
@@ -173,7 +174,7 @@ def get_build_project_data():
 
 def main():
     # 从conf.ini文件中得到数据并开始编译导出
-    get_build_project_data();
+    get_build_project_data()
 
 
 # 执行
