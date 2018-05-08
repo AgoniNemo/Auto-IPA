@@ -28,7 +28,7 @@ else
 fi
 
 # 切换ruby版本
-if [ $nine_above == true ]
+if [ $nine_above == false ]
 then 
     #  rvm use 2.3.0
      echo "fir使用的ruby版本必须为2.3.0以上!"
@@ -37,7 +37,7 @@ fi
 # 上传ipa
 fir p $1 -T $2
 
-if [ $nine_above == true ]
+if [ $nine_above == false ]
 then 
      rvm use system
 fi

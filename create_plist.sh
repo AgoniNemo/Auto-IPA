@@ -40,6 +40,7 @@ if [ $nine_above == false ]
 then
     tag_end 'dict'
     tag_end 'plist'
+    rm tempfile
     exit 1
 fi
 put_key 'key' 'provisioningProfiles'
