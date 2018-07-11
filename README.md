@@ -117,3 +117,5 @@ text = 哈哈
 - error: exportArchive: No applicable devices found.如果报错提示是这个,要在终端输入 rvm use system
 
 - Provisioning profile "描述文件" doesn't include signing certificate "证书".Code signing is required for product type 'Application' in SDK 'iOS 10.3' 这个错误就是你的描述文件与证书不一致造成的，正确配置好就行了。
+
+- `smtplib.SMTPAuthenticationError: (526, 'Authentication failure[0]')`这个错误可能是密码、SMTP服务器地址、邮箱账号（有些邮箱是只写@前面的账号就行了，但大多数都要写全，比如：13288876543@qq.com）填写错误引起的
