@@ -8,7 +8,7 @@
 - ruby 2.3.0（需要上传到fir-cli的ruby最低版本，如果不需要上传，使用默认的就好）
 - rvm 1.29.1+
 - 项目使用CocoaPods生成
-- 
+- [Homebrew](https://brew.sh/index_zh-cn.html)
 
 ### AutoBuild.py用法
 
