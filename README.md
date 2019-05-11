@@ -8,6 +8,7 @@
 - ruby 2.3.0（需要上传到fir-cli的ruby最低版本，如果不需要上传，使用默认的就好）
 - rvm 1.29.1+
 - 项目使用CocoaPods生成
+- 
 
 ### AutoBuild.py用法
 
@@ -119,3 +120,4 @@ text = 哈哈
 - Provisioning profile "描述文件" doesn't include signing certificate "证书".Code signing is required for product type 'Application' in SDK 'iOS 10.3' 这个错误就是你的描述文件与证书不一致造成的，正确配置好就行了。
 
 - `smtplib.SMTPAuthenticationError: (526, 'Authentication failure[0]')`这个错误可能是密码、SMTP服务器地址、邮箱账号（有些邮箱是只写@前面的账号就行了，但大多数都要写全，比如：13288876543@qq.com）填写错误引起的
+- `xcode-select: error: tool 'xcodebuild' requires Xcode, but active developer directory /Library/Developer/CommandLineTools' is a command line tools instance'` 这个错误可能是没有选择好xcode的路径  终端输入`sudo xcode-select --switch <xcode安装路径>`
