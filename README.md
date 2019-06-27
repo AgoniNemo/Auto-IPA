@@ -121,3 +121,4 @@ text = 哈哈
 
 - `smtplib.SMTPAuthenticationError: (526, 'Authentication failure[0]')`这个错误可能是密码、SMTP服务器地址、邮箱账号（有些邮箱是只写@前面的账号就行了，但大多数都要写全，比如：13288876543@qq.com）填写错误引起的
 - `xcode-select: error: tool 'xcodebuild' requires Xcode, but active developer directory /Library/Developer/CommandLineTools' is a command line tools instance'` 这个错误可能是没有选择好xcode的路径  终端输入`sudo xcode-select --switch <xcode安装路径>`
+-`error: exportArchive: The data couldn’t be read because it isn’t in the correct format.`这个错误是Plist文件引起的,需要把`compileBitcode`设置为`false`
