@@ -8,7 +8,6 @@
 - ruby 2.3.0（需要上传到fir-cli的ruby最低版本，如果不需要上传，使用默认的就好）
 - rvm 1.29.1+
 - 项目使用CocoaPods生成
-- [Homebrew](https://brew.sh/index_zh-cn.html)
 
 ### AutoBuild.py用法
 
@@ -26,11 +25,35 @@
 + 还可以右键-->显示简介，常用名称就是了
 ![image](http://upload-images.jianshu.io/upload_images/1610969-0976addfe850abc8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-+ 描述文件就有点麻烦了，先进入到下面的路径
++ 描述文件
+
+#### 方法一:
+
+终端输入
+>  security cms -D -i `从开发者中心下载的描述文件的绝对路径/Users/xxx/Documents/xxx.mobileprovision` | grep -1 'UUID' | grep 'string'
+
+#### 方法二:
 
 > ~/Library/MobileDevice/Provisioning Profiles 这是描述文件的路径
 
 + 可以看到描述文件，如果你有多个项目建议你先copy一份放桌面，然后删除全部文件，在安装你从开发者中心下载的描述文件，这时，你在这个文件里就能看到描述文件名字了
+
+
+### v1.1.1版本参数变动
+
+```
+删除参数 isDev
+
+参数Project_Name 修改为ProjectName 为每个Target名字
+
+添加下列参数：
+[InfoPlist]
+#是否为启用compileBitcode编译,False或者True,默认False 
+enableCompileBitcode = True
+#是否为compileBitcode编译,False或者True,默认False 
+compileBitcode = False
+```
+
 
 ```
 # 来说下conf.ini的配置
@@ -120,5 +143,5 @@ text = 哈哈
 - Provisioning profile "描述文件" doesn't include signing certificate "证书".Code signing is required for product type 'Application' in SDK 'iOS 10.3' 这个错误就是你的描述文件与证书不一致造成的，正确配置好就行了。
 
 - `smtplib.SMTPAuthenticationError: (526, 'Authentication failure[0]')`这个错误可能是密码、SMTP服务器地址、邮箱账号（有些邮箱是只写@前面的账号就行了，但大多数都要写全，比如：13288876543@qq.com）填写错误引起的
-- `xcode-select: error: tool 'xcodebuild' requires Xcode, but active developer directory /Library/Developer/CommandLineTools' is a command line tools instance'` 这个错误可能是没有选择好xcode的路径  终端输入`sudo xcode-select --switch <xcode安装路径>`
-- `error: exportArchive: The data couldn’t be read because it isn’t in the correct format.`这个错误是Plist文件引起的,需要把`compileBitcode`设置为`false`
+
+- `Add a profile to the "provisioningProfiles" dictionary in your Export Options property list.`这是没有找到配置文件问题，如果配置文件里的needCreatePlist设置为False，就把配置文件里的每个PlistPath路径设置正确。2.needCreatePlist设置为True。

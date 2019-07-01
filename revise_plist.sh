@@ -46,7 +46,7 @@ then
         /usr/libexec/PlistBuddy -c "Delete :thinning" $plistName
 
         # 删除 compileBitcode
-        /usr/libexec/PlistBuddy -c "Delete :compileBitcode" $plistName
+#        /usr/libexec/PlistBuddy -c "Delete :compileBitcode" $plistName
 
         # 先添加key值 uploadSymbols
         /usr/libexec/PlistBuddy -c "Add :uploadSymbols bool YES" $plistName

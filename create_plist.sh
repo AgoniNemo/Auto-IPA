@@ -28,13 +28,29 @@ put '!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/D
 tag_start 'plist version="1.0"'
 tag_start 'dict'
 
+compileBitcode='false'
+
 if [ $nine_above == true ]
 then
     put_key 'key' 'compileBitcode'
-    tag_value 'false'
+    compileBitcode='true'
 fi
+
+if [ ${5} == true ]
+then
+    compileBitcode=${6}
+fi
+
+tag_value $compileBitcode
+
 put_key 'key' 'method'
 put_key 'string' ${1}
+
+put_key 'key' 'provisioningProfiles'
+tag_start 'dict'
+put_key 'key' ${2}
+put_key 'string' ${3}
+tag_end 'dict'
 
 if [ $nine_above == false ]
 then
@@ -49,7 +65,7 @@ put_key 'key' ${2}
 put_key 'string' ${3}
 tag_end 'dict'
 put_key 'key' 'signingCertificate'
-put_key 'string' "iPhone ${4}"
+put_key 'string' `iPhone ${4}`
 put_key 'key' 'signingStyle'
 put_key 'string' 'manual'
 put_key 'key' 'stripSwiftSymbols'
