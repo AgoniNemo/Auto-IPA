@@ -39,26 +39,9 @@
 + 可以看到描述文件，如果你有多个项目建议你先copy一份放桌面，然后删除全部文件，在安装你从开发者中心下载的描述文件，这时，你在这个文件里就能看到描述文件名字了
 
 
-### v1.1.1版本参数变动
+### conf.ini的配置
 
 ```
-删除参数 isDev
-
-参数Project_Name 修改为ProjectName 为每个Target名字
-
-添加下列参数：
-[InfoPlist]
-#是否为启用compileBitcode编译,False或者True,默认False 
-enableCompileBitcode = True
-#是否为compileBitcode编译,False或者True,默认False 
-compileBitcode = False
-```
-
-
-```
-# 来说下conf.ini的配置
-# 工程名字(Target名字，比如：XL)
-Project_Name = XL
 
 # workspace的名字（这个是工作空间，使用CocoaPods生成的，一般是与工程名字一样，以xcworkspace为后缀名）
 Workspace_Name = XL
@@ -80,6 +63,21 @@ targerIPA_path = /Users/AG/Documents/ipa
 
 # 配置文件名（比如配置文件为：AdHoc.mobileprovision）
 provisioningProfiles = AdHoc
+```
+
+### v1.1.1版本参数变动
+
+```
+删除参数 isDev
+
+参数Project_Name 修改为ProjectName 为每个Target名字
+
+添加下列参数：
+[InfoPlist]
+#是否为启用compileBitcode编译,False或者True,默认False 
+enableCompileBitcode = True
+#是否为compileBitcode编译,False或者True,默认False 
+compileBitcode = False
 ```
 
 ### v1.1.0版本添加参数
