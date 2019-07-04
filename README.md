@@ -76,12 +76,18 @@ provisioningProfiles = AdHoc
 参数Project_Name 修改为ProjectName 为每个Target名字
 
 添加下列参数：
+
+#是否需要自定义上传（修改CustomUpload.sh）,False或者True,默认False
+uploadCustom = False
+
 [InfoPlist]
 #是否为启用compileBitcode编译,False或者True,默认False 
 enableCompileBitcode = True
 #是否为compileBitcode编译,False或者True,默认False 
 compileBitcode = False
 ```
+
+`特别说下 CustomUpload.sh 是自己实现的上传方式 里面的脚本是博主本地服务器的API 可以根据自己的需要修改`
 
 ### v1.1.0版本添加参数
 
