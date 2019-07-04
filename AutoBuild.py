@@ -48,8 +48,8 @@ def build_project(conf,bundleID,sign,pName,plistPath):
     os.system(build)
     print(build)
 
-# 自动生成的plist文件名
-p = 'TeamExportOptionsPlist.plist' if (conf['automatic'] == str(True)) else 'ExportOptionsPlist.plist'
+    # 自动生成的plist文件名
+    p = 'TeamExportOptionsPlist.plist' if (conf['automatic'] == str(True)) else 'ExportOptionsPlist.plist'
     print ("plist文件名:%s"%p)
     # 导出plist文件
     needCreatePlist = conf['needCreatePlist']
@@ -80,15 +80,15 @@ p = 'TeamExportOptionsPlist.plist' if (conf['automatic'] == str(True)) else 'Exp
             print(explist)
             os.system(explist)
 
-plistName = p if (needCreatePlist == str(True)) else  plistPath
-print ("--%s--"%(plistName))
+    plistName = p if (needCreatePlist == str(True)) else  plistPath
+    print ("--%s--"%(plistName))
 
-# 导出ipa
-# export = 'xcodebuild  -exportArchive -archivePath %s -exportOptionsPlist %s/%s -exportPath %s/%s -allowProvisioningUpdates' %(xcarchivePath,get_path(),plistName,conf['targerIPA_path'],timeName)
-# print(export)
-# os.system(export)
+    # 导出ipa
+    # export = 'xcodebuild  -exportArchive -archivePath %s -exportOptionsPlist %s/%s -exportPath %s/%s -allowProvisioningUpdates' %(xcarchivePath,get_path(),plistName,conf['targerIPA_path'],timeName)
+    # print(export)
+    # os.system(export)
 
-plistp = '%s/%s'%(get_path(),plistName)
+    plistp = '%s/%s'%(get_path(),plistName)
     exportp = '%s/%s'%(conf['targerIPA_path'],timeName)
     # 导出ipa
     exportIPA(xcarchivePath,plistp,exportp)
@@ -115,8 +115,8 @@ plistp = '%s/%s'%(get_path(),plistName)
         
         if (conf['uploadPGYer'] == str(True)):
             uploadPGYer(uploadIPA,conf['APIKey'],'版本更新')
-else:
-    os.system('open %s'%(filePath))
+    else:
+        os.system('open %s'%(filePath))
 
 # 获取当前路径
 def get_path():
@@ -152,17 +152,24 @@ def get_build_project_data():
     
     print("~~~~~~~~~~~~选择打包方式(输入序号)~~~~~~~~~~~~~~~")
     for idx, val in enumerate(list):
-        print("         %s %s" % (idx, val))
+        print("      %s %s" % (idx, val))
 
-    index = input("请输入序号: ")
+    index = 4
 
-if index < 4:
-    key = list[index]
-    conf['type'] = key
-    conf['index'] = index
-    conf['ProvisioningProfiles'] = cf.get(key,'ProvisioningProfiles')
-    conf['ProjectName'] = cf.get(key,'ProjectName')
-    
+    if len(sys.argv) > 1:
+        index = int(sys.argv[1])
+        pass
+    else:
+        index = input("请输入序号: ")
+        pass
+
+    if index < 4:
+        key = list[index]
+        conf['type'] = key
+        conf['index'] = index
+        conf['ProvisioningProfiles'] = cf.get(key,'ProvisioningProfiles')
+        conf['ProjectName'] = cf.get(key,'ProjectName')
+        
         build_project(conf,cf.get(key,'BundleID'),cf.get(key,'SIGN_IDENTITY'),cf.get(key,'PROVISIONING_PROFILE_NAME'),cf.get(key,'PlistPath'))
     else:
         print("无效序号!")
