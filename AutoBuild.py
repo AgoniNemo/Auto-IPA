@@ -115,6 +115,11 @@ def build_project(conf,bundleID,sign,pName,plistPath):
         
         if (conf['uploadPGYer'] == str(True)):
             uploadPGYer(uploadIPA,conf['APIKey'],'版本更新')
+
+        if (conf['uploadCustom'] == str(True)):
+            os.system('chmod  u+x %s/CustomUpload.sh'%(get_path()))
+            os.system('bash %s/CustomUpload.sh %s'%(get_path(),uploadIPA))
+
     else:
         os.system('open %s'%(filePath))
 
@@ -140,6 +145,7 @@ def get_build_project_data():
     conf['automatic'] = cf.get('conf','automatic')
     conf['uploadFir'] = cf.get('conf','uploadFir')
     conf['uploadPGYer'] = cf.get('conf','uploadPGYer')
+    conf['uploadCustom'] = cf.get('conf','uploadCustom')
     conf['plist_path'] = cf.get('conf','plist_path')
     conf['enableCompileBitcode'] = cf.get('InfoPlist','enableCompileBitcode')
     conf['compileBitcode'] = cf.get('InfoPlist','compileBitcode')
