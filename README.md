@@ -33,7 +33,7 @@
 >  security cms -D -i `从开发者中心下载的描述文件的绝对路径/Users/xxx/Documents/xxx.mobileprovision` | grep -1 'UUID' | grep 'string'
 
 如下图：
-![1561956576336](https://raw.githubusercontent.com/AgoniNemo/Auto-IPA/master/img/1561956576336.png)
+![1561956576336](https://raw.githubusercontent.com/AgoniNemo/Auto-IPA/master/img/1561956576336.jpg)
 
 #### 方法二:
 
