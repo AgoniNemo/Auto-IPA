@@ -68,6 +68,17 @@ targerIPA_path = /Users/AG/Documents/ipa
 provisioningProfiles = AdHoc
 ```
 
+### v1.2.0版本参数变动
+```
+添加下列参数：
+[AppStore]
+# 登录Application Loader的用户名
+loaderUserNmae = xxxxxxx@xxxxx.com
+# 登录Application Loader的App专用密码（App专用密码不是账号密码，登录https://appleid.apple.com/zh_CN 查看App专用密码）
+loaderPassword = xxxx-xxxx-xxxx-xxxx
+
+```
+
 ### v1.1.1版本参数变动
 
 ```

@@ -102,26 +102,29 @@ def build_project(conf,bundleID,sign,pName,plistPath):
         send_mail()
         pass
 
-    filePath = '%s/%s' %(conf['targerIPA_path'],timeName)
+    name = conf['ProjectName']
+    filePath = '%s/%s/%s.ipa' %(conf['targerIPA_path'],timeName,name)
+    print('===filePath %s==='%(name))
+
     if (conf['index'] is 0 or conf['index'] is 3):
-        name = conf['ProjectName']
-        print('===%s==='%(name))
-        
-        uploadIPA = '%s/%s.ipa' % (filePath,name)
-        
         if (conf['uploadFir'] == str(True)):
             os.system('chmod  u+x %s/UploadIPA.sh'%(get_path()))
-            os.system('bash %s/UploadIPA.sh %s %s'%(get_path(),uploadIPA,conf['FIRToken']))
+            os.system('bash %s/UploadIPA.sh %s %s'%(get_path(),filePath,conf['FIRToken']))
         
         if (conf['uploadPGYer'] == str(True)):
-            uploadPGYer(uploadIPA,conf['APIKey'],'版本更新')
+            uploadPGYer(filePath,conf['APIKey'],'版本更新')
 
         if (conf['uploadCustom'] == str(True)):
             os.system('chmod  u+x %s/CustomUpload.sh'%(get_path()))
-            os.system('bash %s/CustomUpload.sh %s'%(get_path(),uploadIPA))
+            os.system('bash %s/CustomUpload.sh %s'%(get_path(),filePath))
 
     else:
-        os.system('open %s'%(filePath))
+        if conf['index'] is 0:
+            os.system('chmod  u+x %s/UploadAppStore.sh'%(get_path()))
+            os.system('bash %s/UploadAppStore.sh %s %s %s'%(get_path(),conf['loaderUserNmae'],conf['loaderPassword'],filePath))
+            break
+        else:
+            os.system('open %s'%(filePath))
 
 # 获取当前路径
 def get_path():
@@ -149,10 +152,8 @@ def get_build_project_data():
     conf['plist_path'] = cf.get('conf','plist_path')
     conf['enableCompileBitcode'] = cf.get('InfoPlist','enableCompileBitcode')
     conf['compileBitcode'] = cf.get('InfoPlist','compileBitcode')
-    
-    # sh_path = '%s/rvm.sh' % get_path()
-    # os.system('chmod  u+x %s'%(sh_path))
-    # os.system('bash %s 1'%(sh_path))
+    conf['loaderUserNmae'] = cf.get('AppStore','loaderUserNmae')
+    conf['loaderPassword'] = cf.get('AppStore','loaderPassword')
     
     list = ["AdHoc","AppStore","Enterprise","Development"]
     
