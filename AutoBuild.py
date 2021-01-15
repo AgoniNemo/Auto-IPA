@@ -122,7 +122,6 @@ def build_project(conf,bundleID,sign,pName,plistPath):
         if conf['index'] is 0:
             os.system('chmod  u+x %s/UploadAppStore.sh'%(get_path()))
             os.system('bash %s/UploadAppStore.sh %s %s %s'%(get_path(),conf['loaderUserNmae'],conf['loaderPassword'],filePath))
-            break
         else:
             os.system('open %s'%(filePath))
 
