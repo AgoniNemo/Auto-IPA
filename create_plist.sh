@@ -65,7 +65,7 @@ put_key 'key' ${2}
 put_key 'string' ${3}
 tag_end 'dict'
 put_key 'key' 'signingCertificate'
-put_key 'string' `iPhone ${4}`
+put_key 'string' `Apple ${4}`
 put_key 'key' 'signingStyle'
 put_key 'string' 'manual'
 put_key 'key' 'stripSwiftSymbols'

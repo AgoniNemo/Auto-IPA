@@ -48,8 +48,10 @@ def build_project(conf,bundleID,sign,pName,plistPath):
     os.system(build)
     print(build)
 
+    # 判断是个人账号还是公司账号
+    isTeam = (len(conf['teamID']) > 0)
     # 自动生成的plist文件名
-    p = 'TeamExportOptionsPlist.plist' if (conf['automatic'] == str(True)) else 'ExportOptionsPlist.plist'
+    p = 'TeamExportOptionsPlist.plist' if (isTeam) else 'ExportOptionsPlist.plist'
     print ("plist文件名:%s"%p)
     # 导出plist文件
     needCreatePlist = conf['needCreatePlist']
@@ -67,13 +69,13 @@ def build_project(conf,bundleID,sign,pName,plistPath):
             print("修改 %s" % replist)
             os.system(replist)
         else:
-            t = '_team' if (conf['automatic'] == str(True)) else ''
+            t = '_team' if (isTeam) else ''
             
             os.system('chmod u+x %s/revise%s_plist.sh'%(get_path(),t))
             os.system('chmod u+x %s/create%s_plist.sh'%(get_path(),t))
             print('plist文件不存在，开始创建plist文件！')
             explist = './create%s_plist.sh %s' % (t,l[conf["index"]])
-            if (conf['automatic'] == str(True)):
+            if (isTeam):
                 explist = '%s %s %s %s %s %s'%(explist,conf['teamID'],bundleID,conf['ProvisioningProfiles'],conf['enableCompileBitcode'].lower(),conf['compileBitcode'].lower())
             else:
                 explist = "%s %s %s %s %s %s"%(explist,bundleID,conf['ProvisioningProfiles'],s,conf['enableCompileBitcode'].lower(),conf['compileBitcode'].lower())
@@ -82,11 +84,6 @@ def build_project(conf,bundleID,sign,pName,plistPath):
 
     plistName = p if (needCreatePlist == str(True)) else  plistPath
     print ("--%s--"%(plistName))
-
-    # 导出ipa
-    # export = 'xcodebuild  -exportArchive -archivePath %s -exportOptionsPlist %s/%s -exportPath %s/%s -allowProvisioningUpdates' %(xcarchivePath,get_path(),plistName,conf['targerIPA_path'],timeName)
-    # print(export)
-    # os.system(export)
 
     plistp = '%s/%s'%(get_path(),plistName)
     exportp = '%s/%s'%(conf['targerIPA_path'],timeName)
