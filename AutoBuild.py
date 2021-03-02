@@ -37,10 +37,13 @@ def build_project(conf,bundleID,sign,pName,plistPath):
     
     scheme = conf['ProjectName']
     
+    # 判断是个人账号还是公司账号
+    isTeam = (len(conf['teamID']) > 0)
+
     # 导出xcarchive
     build = 'xcodebuild -workspace %s -scheme %s -configuration %s -archivePath %s clean archive build' %(xcworkPath,scheme,conf['configuration'],xcarchivePath)
     
-    if (conf['automatic'] == str(False)):
+    if ((conf['automatic'] == str(False)) & bool(1-isTeam)):
         string = ' CODE_SIGN_IDENTITY="%s" PROVISIONING_PROFILE="%s" PRODUCT_BUNDLE_IDENTIFIER="%s"'%(sign,pName,bundleID)
         build = build + string
 
@@ -48,8 +51,6 @@ def build_project(conf,bundleID,sign,pName,plistPath):
     os.system(build)
     print(build)
 
-    # 判断是个人账号还是公司账号
-    isTeam = (len(conf['teamID']) > 0)
     # 自动生成的plist文件名
     p = 'TeamExportOptionsPlist.plist' if (isTeam) else 'ExportOptionsPlist.plist'
     print ("plist文件名:%s"%p)
