@@ -22,6 +22,16 @@ signingStyle=$(/usr/libexec/PlistBuddy -c "Print :signingStyle" $plistName)
 
 echo $signingStyle
 
+# 配置文件名称
+configName=$(/usr/libexec/PlistBuddy -c "Print :provisioningProfiles:"$3"" $plistName)
+echo "配置文件名称 $configName"
+
+if [ $configName != "$4" ]
+then
+   # 修改配置文件名称
+   /usr/libexec/PlistBuddy -c "Set :provisioningProfiles:"$3" "$4"" $plistName
+fi
+
 if [ $signingStyle = "automatic" ]
 then
     echo '---证书自动管理---'

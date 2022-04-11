@@ -101,7 +101,8 @@ def build_project(conf,bundleID,sign,pName,plistPath):
         pass
 
     name = conf['ProjectName']
-    filePath = '%s/%s/%s.ipa' %(conf['targerIPA_path'],timeName,name)
+    dirPath = '%s/%s/%s' %(conf['targerIPA_path'],timeName,name)
+    filePath = '%s.ipa' %(dirPath)
     print('===filePath %s==='%(name))
 
     if (conf['index'] is 0 or conf['index'] is 3):
@@ -117,9 +118,14 @@ def build_project(conf,bundleID,sign,pName,plistPath):
             os.system('bash %s/CustomUpload.sh %s'%(get_path(),filePath))
 
     else:
-        if conf['index'] is 0:
-            os.system('chmod  u+x %s/UploadAppStore.sh'%(get_path()))
-            os.system('bash %s/UploadAppStore.sh %s %s %s'%(get_path(),conf['loaderUserNmae'],conf['loaderPassword'],filePath))
+        if conf['index'] is 1:
+            userName = conf['loaderUserName']
+            password = conf['loaderPassword']
+            if  len(userName) > 0 and len(password) > 0:
+                os.system('chmod  u+x %s/UploadAppStore.sh'%(get_path()))
+                os.system('bash %s/UploadAppStore.sh %s %s %s'%(get_path(),userName,password))
+            else:
+                os.system('open %s'%(dirPath))
         else:
             os.system('open %s'%(filePath))
 
@@ -149,7 +155,7 @@ def get_build_project_data():
     conf['plist_path'] = cf.get('conf','plist_path')
     conf['enableCompileBitcode'] = cf.get('InfoPlist','enableCompileBitcode')
     conf['compileBitcode'] = cf.get('InfoPlist','compileBitcode')
-    conf['loaderUserNmae'] = cf.get('AppStore','loaderUserNmae')
+    conf['loaderUserName'] = cf.get('AppStore','loaderUserName')
     conf['loaderPassword'] = cf.get('AppStore','loaderPassword')
     
     list = ["AdHoc","AppStore","Enterprise","Development"]
