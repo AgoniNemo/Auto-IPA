@@ -1,16 +1,14 @@
 # -*- coding: utf-8 -*-
+from ast import If
 import os
 import sys
 import time
-import hashlib
 from email import encoders
 from email.header import Header
 from email.mime.text import MIMEText
 from email.utils import parseaddr, formataddr
-import smtplib
 import sendMail
-import ConfigParser
-
+import configparser
 
 # 发邮件
 def send_mail():
@@ -18,7 +16,7 @@ def send_mail():
 
 # 上传到蒲公英
 def uploadPGYer(path,apiKey,updateDescription=''):
-    os.popen("curl -F 'file=@%s' -F '_api_key=%s' -F 'updateDescription=%s' https://www.pgyer.com/apiv2/app/upload"%(path,apiKey,updateDescription))
+    os.popen("curl -F 'file=@%s' -F '_api_key=%s' -F 'updateDescription=%s' https://www.pgyer.com/apiv2/app/upload"%(path,apiKey,updateDescription)).read()
     os.system("open https://www.pgyer.com/my")
 
 # 导出ipa
@@ -28,12 +26,8 @@ def exportIPA(xcarchivePath,plistPath,exportPath):
     os.system(export)
 
 # 导出xcarchive
-def build_project(conf,sign,pName,plistPath):
-    bundleID = conf['bundleID']
-    sign = sign['SIGN_IDENTITY']
-    pName = conf['PROVISIONING_PROFILE_NAME']
-    plistPath = conf['PlistPath']
-
+def build_project(conf,bundleID,sign,pName,plistPath):
+    
     timeName = time.strftime('%Y年%m月%d日-%H-%M-%S',time.localtime(time.time()))
     
     xcworkPath = '%s/%s.xcworkspace' %(conf['project_path'],conf['workspace_Name'])
@@ -61,7 +55,7 @@ def build_project(conf,sign,pName,plistPath):
     # 导出plist文件
     needCreatePlist = conf['needCreatePlist']
     if (needCreatePlist == str(True)):
-        # l = ["ad-hoc","app-store","enterprise","development"]
+        #l = ["ad-hoc","app-store-connect","enterprise","development","app-store-connect"]
         try:
             s=sign.split(':',1)[0].split(' ')[1]
         except IOError:
@@ -70,7 +64,7 @@ def build_project(conf,sign,pName,plistPath):
         path = '%s/%s' % (get_path(),p)
         print(path)
         if os.path.isfile(path):
-            replist = './revise_plist.sh %s %s %s %s %s' % (p,l[conf["index"]],bundleID,conf['ProvisioningProfiles'],s)
+            replist = './revise_plist.sh %s %s %s %s %s' % (p,conf["BundleType"],bundleID,conf['ProvisioningProfiles'],s)
             print("修改 %s" % replist)
             os.system(replist)
         else:
@@ -79,7 +73,7 @@ def build_project(conf,sign,pName,plistPath):
             os.system('chmod u+x %s/revise%s_plist.sh'%(get_path(),t))
             os.system('chmod u+x %s/create%s_plist.sh'%(get_path(),t))
             print('plist文件不存在，开始创建plist文件！')
-            explist = './create%s_plist.sh %s' % (t,l[conf["index"]])
+            explist = './create%s_plist.sh %s' % (t,conf["BundleType"])
             if (isTeam):
                 explist = '%s %s %s %s %s %s'%(explist,conf['teamID'],bundleID,conf['ProvisioningProfiles'],conf['enableCompileBitcode'].lower(),conf['compileBitcode'].lower())
             else:
@@ -94,11 +88,12 @@ def build_project(conf,sign,pName,plistPath):
     exportp = '%s/%s'%(conf['targerIPA_path'],timeName)
     # 导出ipa
     exportIPA(xcarchivePath,plistp,exportp)
+    type = conf['type']
     
-    # 更新版本号
-    if(conf['BundleType'] == 'app-store-connect'):
+    if(type == 'AppStore'):
         os.system('chmod  u+x ./BundleVersion.sh')
-        os.system('./BundleVersion.sh %s'%(conf['plist_path']))
+        project_path = '%s/%s'%(conf['project_path'],conf['workspace_Name'])
+        os.system('./BundleVersion.sh %s %s %s %s',project_path,scheme,conf['VersionReleaseUuid'],conf['VersionDebugUuid'])
     
     if (conf['needSendMail'] == str(True)):
         # 发邮件
@@ -110,7 +105,7 @@ def build_project(conf,sign,pName,plistPath):
     filePath = '%s.ipa' %(dirPath)
     print('===filePath %s==='%(name))
 
-    if (conf['index'] is 0 or conf['index'] is 3):
+    if (conf['index'] == 0 or conf['index'] == 3):
         if (conf['uploadFir'] == str(True)):
             os.system('chmod  u+x %s/UploadIPA.sh'%(get_path()))
             os.system('bash %s/UploadIPA.sh %s %s'%(get_path(),filePath,conf['FIRToken']))
@@ -123,10 +118,11 @@ def build_project(conf,sign,pName,plistPath):
             os.system('bash %s/CustomUpload.sh %s'%(get_path(),filePath))
 
     else:
-        if conf['index'] is 1:
+        if conf['index'] == 1:
             userName = conf['loaderUserName']
             password = conf['loaderPassword']
-            if  len(userName) > 0 and len(password) > 0:
+            print('====userName====%s %s %s %s'%(userName,len(userName), len(password),dirPath))
+            if len(userName) > 0 and len(password) > 0:
                 os.system('chmod  u+x %s/UploadAppStore.sh'%(get_path()))
                 os.system('bash %s/UploadAppStore.sh %s %s %s'%(get_path(),userName,password))
             else:
@@ -144,10 +140,15 @@ def get_path():
 
 # 读取配置文件
 def get_build_project_data():
-    cf = ConfigParser.ConfigParser()
+    cf = configparser.ConfigParser()
     cf.read('%s/conf.ini' % get_path())
     
-    conf ={'project_path':cf.get('conf', 'project_path'),'workspace_Name':cf.get('conf', 'Workspace_Name'),'targerIPA_path':cf.get('conf', 'targerIPA_path'),'configuration':cf.get('conf', 'Configuration')}
+    conf = {
+        'project_path':cf.get('conf', 'project_path'),
+        'workspace_Name':cf.get('conf', 'Workspace_Name'),
+        'targerIPA_path':cf.get('conf', 'targerIPA_path'),
+        'configuration':cf.get('conf', 'Configuration')
+        }
     conf['needSendMail']=cf.getboolean('conf', 'needSendMail')
     conf['needCreatePlist'] = cf.get('conf','needCreatePlist')
     conf['teamID'] = cf.get('conf','teamID')
@@ -185,11 +186,9 @@ def get_build_project_data():
         conf['ProvisioningProfiles'] = cf.get(key,'ProvisioningProfiles')
         conf['ProjectName'] = cf.get(key,'ProjectName')
         conf['BundleType'] = cf.get(key,'BundleType')
-        conf['BundleID'] = cf.get(key,'BundleID')
-        conf['SIGN_IDENTITY'] = cf.get(key,'SIGN_IDENTITY')
-        conf['PROVISIONING_PROFILE_NAME'] = cf.get(key,'PROVISIONING_PROFILE_NAME')
-        conf['PlistPath'] = cf.get(key,'PlistPath')
-        build_project(conf)
+        conf['VersionReleaseUuid'] = cf.get(key,'VersionReleaseUuid')
+        conf['VersionDebugUuid'] = cf.get(key,'VersionDebugUuid')
+        build_project(conf,cf.get(key,'BundleID'),cf.get(key,'SIGN_IDENTITY'),cf.get(key,'PROVISIONING_PROFILE_NAME'),cf.get(key,'PlistPath'))
     else:
         print("无效序号!")
 
