@@ -96,7 +96,9 @@ def build_project(conf):
     if(type == 'AppStore'):
         os.system('chmod  u+x ./BundleVersion.sh')
         project_path = '%s/%s'%(conf['project_path'],conf['workspace_Name'])
-        os.system('./BundleVersion.sh %s %s %s %s',project_path,scheme,conf['VersionReleaseUuid'],conf['VersionDebugUuid'])
+        shell = './BundleVersion.sh %s %s %s %s' % (project_path,scheme,conf['VersionReleaseUuid'],conf['VersionDebugUuid'])
+        print(shell)
+        os.system(shell)
     
     if (conf['needSendMail'] == str(True)):
         # 发邮件
