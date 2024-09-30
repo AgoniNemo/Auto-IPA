@@ -26,8 +26,11 @@ def exportIPA(xcarchivePath,plistPath,exportPath):
     os.system(export)
 
 # 导出xcarchive
-def build_project(conf,bundleID,sign,pName,plistPath):
-    
+def build_project(conf):
+    bundleID=conf['BundleID']
+    sign=conf['SIGN_IDENTITY']
+    pName=conf['PROVISIONING_PROFILE_NAME']
+    plistPath=conf['PlistPath']
     timeName = time.strftime('%Y年%m月%d日-%H-%M-%S',time.localtime(time.time()))
     
     xcworkPath = '%s/%s.xcworkspace' %(conf['project_path'],conf['workspace_Name'])
@@ -186,9 +189,13 @@ def get_build_project_data():
         conf['ProvisioningProfiles'] = cf.get(key,'ProvisioningProfiles')
         conf['ProjectName'] = cf.get(key,'ProjectName')
         conf['BundleType'] = cf.get(key,'BundleType')
+        conf['BundleID'] = cf.get(key,'BundleID')
+        conf['SIGN_IDENTITY'] = cf.get(key,'SIGN_IDENTITY')
+        conf['PROVISIONING_PROFILE_NAME'] = cf.get(key,'PROVISIONING_PROFILE_NAME')
+        conf['PlistPath'] = cf.get(key,'PlistPath')
         conf['VersionReleaseUuid'] = cf.get(key,'VersionReleaseUuid')
         conf['VersionDebugUuid'] = cf.get(key,'VersionDebugUuid')
-        build_project(conf,cf.get(key,'BundleID'),cf.get(key,'SIGN_IDENTITY'),cf.get(key,'PROVISIONING_PROFILE_NAME'),cf.get(key,'PlistPath'))
+        build_project(conf)
     else:
         print("无效序号!")
 
