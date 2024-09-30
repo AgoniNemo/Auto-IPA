@@ -28,8 +28,12 @@ def exportIPA(xcarchivePath,plistPath,exportPath):
     os.system(export)
 
 # 导出xcarchive
-def build_project(conf,bundleID,sign,pName,plistPath):
-    
+def build_project(conf,sign,pName,plistPath):
+    bundleID = conf['bundleID']
+    sign = sign['SIGN_IDENTITY']
+    pName = conf['PROVISIONING_PROFILE_NAME']
+    plistPath = conf['PlistPath']
+
     timeName = time.strftime('%Y年%m月%d日-%H-%M-%S',time.localtime(time.time()))
     
     xcworkPath = '%s/%s.xcworkspace' %(conf['project_path'],conf['workspace_Name'])
@@ -57,7 +61,7 @@ def build_project(conf,bundleID,sign,pName,plistPath):
     # 导出plist文件
     needCreatePlist = conf['needCreatePlist']
     if (needCreatePlist == str(True)):
-        l = ["ad-hoc","app-store","enterprise","development"]
+        # l = ["ad-hoc","app-store","enterprise","development"]
         try:
             s=sign.split(':',1)[0].split(' ')[1]
         except IOError:
@@ -91,7 +95,8 @@ def build_project(conf,bundleID,sign,pName,plistPath):
     # 导出ipa
     exportIPA(xcarchivePath,plistp,exportp)
     
-    if(conf['type'] == 'AppStore'):
+    # 更新版本号
+    if(conf['BundleType'] == 'app-store-connect'):
         os.system('chmod  u+x ./BundleVersion.sh')
         os.system('./BundleVersion.sh %s'%(conf['plist_path']))
     
@@ -179,8 +184,12 @@ def get_build_project_data():
         conf['index'] = index
         conf['ProvisioningProfiles'] = cf.get(key,'ProvisioningProfiles')
         conf['ProjectName'] = cf.get(key,'ProjectName')
-        
-        build_project(conf,cf.get(key,'BundleID'),cf.get(key,'SIGN_IDENTITY'),cf.get(key,'PROVISIONING_PROFILE_NAME'),cf.get(key,'PlistPath'))
+        conf['BundleType'] = cf.get(key,'BundleType')
+        conf['BundleID'] = cf.get(key,'BundleID')
+        conf['SIGN_IDENTITY'] = cf.get(key,'SIGN_IDENTITY')
+        conf['PROVISIONING_PROFILE_NAME'] = cf.get(key,'PROVISIONING_PROFILE_NAME')
+        conf['PlistPath'] = cf.get(key,'PlistPath')
+        build_project(conf)
     else:
         print("无效序号!")
 
